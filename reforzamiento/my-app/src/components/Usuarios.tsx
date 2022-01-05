@@ -1,17 +1,7 @@
-import { useEffect, useState } from "react";
-import { reqResApi } from "../api/reqRes";
-import { ReqResResponse, Usuario } from "../interfaces/reqRes";
+import { useUsuarios } from "../hooks/useUsuarios";
 
 export const Usuarios = () => {
-  const [usuarios, setusuarios] = useState<Usuario[]>([]);
-
-  useEffect(() => {
-    // Llamado API
-    reqResApi
-      .get<ReqResResponse>("/users")
-      .then((res) => setusuarios(res.data.data))
-      .catch(console.error);
-  }, []);
+  const { usuarios, cargarUsuarios, crearUsuario } = useUsuarios();
   return (
     <>
       <h2>Usuarios</h2>
@@ -23,8 +13,11 @@ export const Usuarios = () => {
             <th>Email</th>
           </tr>
         </thead>
-        <tbody></tbody>
+        <tbody>{usuarios.map(crearUsuario)}</tbody>
       </table>
+      <button className="btn btn-primary" onClick={cargarUsuarios}>
+        Siguiente
+      </button>
     </>
   );
 };
