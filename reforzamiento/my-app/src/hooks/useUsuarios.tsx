@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { reqResApi } from "../api/reqRes";
 import { ReqResResponse, Usuario } from "../interfaces/reqRes";
+
 export const useUsuarios = () => {
   const [usuarios, setusuarios] = useState<Usuario[]>([]);
   // const [pageRef, setpageRef] = useState(1);
@@ -18,32 +19,22 @@ export const useUsuarios = () => {
 
     if (res.data.data.length > 0) {
       setusuarios(res.data.data);
-      pageRef.current++;
     } else {
+      pageRef.current--;
       alert("no hay mas usuarios");
     }
   };
 
-  const crearUsuario = (usuario: Usuario) => {
-    return (
-      <tr key={usuario.id.toString()}>
-        <td>
-          <img
-            src={usuario.avatar}
-            alt={usuario.first_name}
-            style={{
-              width: 35,
-              borderRadius: 100,
-            }}
-          />
-        </td>
-        <td>
-          {usuario.first_name} {usuario.last_name}
-        </td>
-        <td>{usuario.email}</td>
-      </tr>
-    );
+  const paginaSiguiente = () => {
+    pageRef.current++;
+    cargarUsuarios();
+  };
+  const paginaAnterior = () => {
+    if (pageRef.current > 1) {
+      pageRef.current--;
+      cargarUsuarios();
+    }
   };
 
-  return { usuarios, cargarUsuarios , crearUsuario};
+  return { usuarios, paginaAnterior, paginaSiguiente};
 };
